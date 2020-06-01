@@ -3,6 +3,8 @@ const config = require('./config');
 
 const twitter = new Tw(config.app_only);
 
+console.log ('config:', config)
+
 twitter.get('search/tweets', {
   q: 'job developer join team',
   result_type: 'recent', 
