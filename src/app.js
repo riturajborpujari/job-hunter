@@ -1,7 +1,7 @@
 const Tw = require('twitter');
 const config = require('./config');
 
-const twitter = new Tw(config.app_only);
+const twitter = new Tw(config.acc);
 
 console.log ('config:', config)
 
