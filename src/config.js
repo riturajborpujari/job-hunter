@@ -14,4 +14,4 @@ const twitter_conf = {
   } 
 }
 
-exports.config = twitter_conf
+module.exports = twitter_conf
