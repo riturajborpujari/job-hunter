@@ -1,0 +1,16 @@
+{
+  "name": "job-hunter-bot",
+  "version": "1.0.0",
+  "description": "a twitter bot for retweeting job offer tweets",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "twitter": "1.7.1", 
+    "dotenv": "8.2.0"
+  },
+  "keywords": ["bot", "Twitter", "job", "offers"],
+  "author": "Rituraj Borpujari",
+  "license": "MIT"
+}
