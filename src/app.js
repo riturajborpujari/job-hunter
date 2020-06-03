@@ -6,14 +6,10 @@ let PARAMS = {
   count: 1
 };
 
-const search = async () => {
-  try {
-    let res = await twitter.searchTweets(PARAMS);
-    
-    console.log(res);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-search();
+twitter.searchTweets(PARAMS)
+ .then(res => {
+   console.log (res);
+ })
+ .catch(e => {
+   console.error(e);
+ })
