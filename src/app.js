@@ -6,7 +6,7 @@ let PARAMS = {
   count: 1
 };
 
-async function start() {
+const start = async () => {
   try {
     let res = await twitter.searchTweets(PARAMS);
     
