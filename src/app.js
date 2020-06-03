@@ -1,16 +1,19 @@
-const Tw = require('twitter');
-const config = require('./config');
+const twitter = require('./twitterApi');
 
-const twitter = new Tw(config.acc);
-
-console.log ('config:', config.acc)
-
-twitter.get('search/tweets', {
+let PARAMS = {
   q: 'job developer join team',
-  result_type: 'recent', 
+  result_type: 'recent',
   count: 1
-}).then(data => {
-  console.log(data);
-}).catch(err=> {
-  console.error(err);
-})
+};
+
+async function start() {
+  try {
+    let res = await twitter.searchTweets(PARAMS);
+    
+    console.log(res);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+start();
