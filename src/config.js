@@ -1,6 +1,8 @@
+const fs = require('fs');
+
 require('dotenv').config()
 
-const twitter_conf = {
+const TwitterConfig= {
   app_only: {
     consumer_key: process.env.consumer_key,
     consumer_secret: process.env.consumer_secret,
@@ -14,4 +16,45 @@ const twitter_conf = {
   } 
 }
 
-module.exports = twitter_conf
+const Load = () => {
+  let content = fs.readFileSync('botConfig.json');
+  
+  content = JSON.parse(content );
+  
+  return content;
+}
+
+const Store = (data) => {
+  data = JSON.stringify(data);
+  
+  fs.writeFileSync('botConfig.json', data);
+}
+
+const LoadTweetIds = () => {
+  let content = fs.readFileSync('tweetStore.json');
+  
+  content = JSON.parse(content);
+  
+  return content.ids;
+}
+
+const StoreTweetIds = (tweetIds) => {
+  let data = {
+    ids: tweetIds
+  }
+  
+  fs.writeFileSync('tweetStore.json', data);
+}
+
+
+module.exports = {
+  TwitterConfig, 
+  BotConfig: {
+    Load, 
+    Store
+  }, 
+  TweetStore: {
+    Load: LoadTweetIds, 
+    Store: StoreTweetIds
+  }
+} 
