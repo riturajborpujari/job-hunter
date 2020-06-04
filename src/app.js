@@ -16,7 +16,7 @@ async function SearchAndStore() {
     }
 
     if (tweetIds) {
-      tweetsForAction = [...tweetsForAction, ...tweetIds];
+      tweetsForAction = [...tweetIds, ...tweetsForAction];
       
       console.log(`Added ${tweetIds.length} tweets`);
     }
