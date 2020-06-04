@@ -30,6 +30,7 @@ async function Action() {
     let tweetId = tweetsForAction.shift();
     
     try {
+      console.log('trying to retweet: ', tweetId)
       let res = await twitter.retweet(tweetId);
       
       console.log('Retweet successfull');
