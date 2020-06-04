@@ -27,7 +27,7 @@ async function SearchAndStore() {
 
 async function Action() {
   if (tweetsForAction.length) {
-    let tweetId = tweetsForAction.shift();
+    let tweetId = tweetsForAction.pop();
     
     try {
       console.log('trying to retweet: ', tweetId)
