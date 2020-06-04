@@ -43,6 +43,8 @@ const StoreTweetIds = (tweetIds) => {
     ids: tweetIds
   }
   
+  data = JSON.stringify(data);
+  
   fs.writeFileSync('tweetStore.json', data);
 }
 

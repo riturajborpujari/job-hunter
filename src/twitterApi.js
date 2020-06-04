@@ -18,17 +18,21 @@ async function searchTweets(search_params) {
 }
 
 async function retweet(tweetId) {
-  let endpoint = `statuses/retweet/${tweetId}`;
+  let endpoint = `statuses/retweet`;
 
-  let res = await twitter.post(endpoint);
+  let res = await twitter.post(endpoint, {
+    id: tweetId
+  });
 
   return res;
 }
 
 async function favorite(tweetId) {
-  let endpoint = `favorites/create.json?id=${tweetId}`;
+  let endpoint = `favorites/create`;
 
-  let res = await twitter.post(endpoint);
+  let res = await twitter.post(endpoint, {
+    id: tweetId
+  });
 
   return res;
 }
