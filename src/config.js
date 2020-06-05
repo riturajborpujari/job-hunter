@@ -48,6 +48,10 @@ const StoreTweetIds = (tweetIds) => {
   fs.writeFileSync('tweetStore.json', data);
 }
 
+// load tweet interval in milliseconds 
+// defaults to 10 mins equivalent 
+let TweetInterval = (process.env.TWEET_INTERVAL_IN_SEC || 600) * 1000;
+
 
 module.exports = {
   TwitterConfig, 
@@ -58,5 +62,7 @@ module.exports = {
   TweetStore: {
     Load: LoadTweetIds, 
     Store: StoreTweetIds
-  }
+  }, 
+  BotUser: process.env.BOT_USER, 
+  TweetInterval
 } 

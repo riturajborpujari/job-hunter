@@ -1,5 +1,5 @@
 const twitter = require('./twitterApi');
-const {BotConfig, TweetStore} = require('./config');
+const {BotConfig, TweetStore, TweetInterval} = require('./config');
 
 let PARAMS = BotConfig.Load();
 let tweetsForAction = TweetStore.Load();
@@ -23,6 +23,13 @@ async function SearchAndStore() {
   } catch (e) {
     console.error(e);
   }
+  
+  // calculate the time after which queue will be empty
+  let interval = tweetsForAction.length * TweetInterval;
+  if (interval === 0){
+    interval = 1 * TweetInterval;
+  }
+  setTimeout(SearchAndStore, interval);
 }
 
 async function Action() {
@@ -43,11 +50,16 @@ async function Action() {
   }
 }
 
-// Run SearchAndStore after every 30 mins
-setInterval(SearchAndStore, 30 * 60 * 1000);
 
-// Run Action after every 5 mins
-setInterval(Action, 5 * 60 * 1000);
+async function start() {
+  // search for tweets
+  await SearchAndStore();
+  
+  // Run Action after every TweetInterval milliseconds 
+  setInterval(Action, TweetInterval);
+  
+  // also start retweeting immediately 
+  Action();
+}
 
-// Start the first SearchAndStore
-SearchAndStore();
+start();

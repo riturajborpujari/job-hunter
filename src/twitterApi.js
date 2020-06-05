@@ -1,5 +1,5 @@
 const Tw = require('twitter');
-const {TwitterConfig} = require('./config');
+const { TwitterConfig, BotUser} = require('./config');
 
 const twitter = new Tw(TwitterConfig.acc);
 
@@ -41,7 +41,14 @@ function filterTweetIds(tweets) {
   let ids = [];
 
   tweets.forEach(tweet => {
-    ids.push(tweet.id_str);
+    if (BotUser) {
+      if (tweet.user.screen_name !== BotUser) {
+        ids.push(tweet.id_str);
+      }
+    }
+    else {
+      ids.push(tweet.id_str);
+    }
   })
 
   return ids;
