@@ -8,6 +8,7 @@ async function searchTweets(search_params) {
 
   let res = await twitter.get(endpoint, search_params);
 
+  // Filter only ids for tweets
   let tweetIds = filterTweetIds(res.statuses);
   let since_id = getRefreshParameter(res.search_metadata);
 
@@ -42,6 +43,7 @@ function filterTweetIds(tweets) {
 
   tweets.forEach(tweet => {
     if (BotUser) {
+      // skip tweets that are posted by this bot itself
       if (tweet.user.screen_name !== BotUser) {
         ids.push(tweet.id_str);
       }
@@ -54,18 +56,31 @@ function filterTweetIds(tweets) {
   return ids;
 }
 
+/*
+  Find out since_id from search_metadata
+
+  Structure:
+    search_metadata : {
+      refresh_url: 'since_id=212141434324341&q=job+developer&count=6'
+      ...
+    }
+
+  Procedure: 
+    1. Start with the refresh url.
+    2. Find the index of the first character after '=' sign in 'since_id='
+    3. Trim everything before this character(including the '=')
+    4. Find the first occurence of '&' which will mark the end of since_id value
+    5. slice from start to this end index
+*/
 function getRefreshParameter(search_metadata) {
   let since_id = '';
 
   let param = search_metadata.refresh_url;
-  let start_index = param.indexOf('since_id=');
 
-  // forward till after the '=' sign
-  start_index += 9;
+  // length of 'since_id=' is 9
+  let start_index = param.indexOf('since_id=') + 9;
 
-  // trim param before start_index
   param = param.slice(start_index, param.length);
-
   let end_index = param.indexOf('&');
 
   since_id = param.slice(0, end_index);
