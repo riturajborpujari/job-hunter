@@ -11,12 +11,16 @@ async function SearchAndStore() {
     if (since_id) {
       PARAMS.since_id = since_id;
       
+      // Save bot config to disk
       BotConfig.Store(PARAMS );
       console.log('New since_id:', since_id);
     }
 
     if (tweetIds) {
       tweetsForAction = [...tweetIds, ...tweetsForAction];
+
+      // save the tweets to disk
+      TweetStore.Store(tweetsForAction);
       
       console.log(`Added ${tweetIds.length} tweets`);
     }
@@ -38,15 +42,18 @@ async function Action() {
     
     try {
       console.log('trying to retweet: ', tweetId)
-      let res = await twitter.retweet(tweetId);
+      await twitter.retweet(tweetId);
       
-      console.log('Retweet successfull');
-      
-      // store ids to be able to survive crashes
-      TweetStore.Store(tweetsForAction);
+      console.log('Retweeted on', new Date());    
     } catch (e) {
       console.error(e);
     }
+    
+    // store ids to be able to survive crashes
+    TweetStore.Store(tweetsForAction);
+  }
+  else{
+    console.log('No tweets in queue!', new Date());
   }
 }
 
