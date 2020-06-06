@@ -17,6 +17,8 @@ async function SearchAndStore() {
     }
 
     if (tweetIds) {
+      // merge the newly loaded tweet ids with older ones
+      // New ones will be in the front
       tweetsForAction = [...tweetIds, ...tweetsForAction];
 
       // save the tweets to disk
