@@ -19,24 +19,19 @@ async function SearchAndStore() {
       /**
        * Add newly fetched tweets to list
        */
-      tweet_ids =  TweetStore.AddNewTweets(result.tweet_ids);
-      console.log('Tweets: ', TweetStore.GetAllTweets());
+      const tweets = TweetStore.AddNewTweets(result.tweet_ids);
+      console.log('Tweets: ', tweets);
+
+      return tweets.length;
     }
   } catch (err) {
     console.error(err);
   }
-
-  // // calculate the time after which queue will be empty
-  // let interval = tweetsForAction.length * TweetInterval;
-  // if (interval === 0) {
-  //   interval = 1 * TweetInterval;
-  // }
-  // setTimeout(SearchAndStore, interval);
 }
 
 async function Action() {
   const tweet_id = TweetStore.GetTweet();
-  
+
   if (tweet_id) {
     try {
       console.log(`Favoriting ${tweet_id}...`);
@@ -55,16 +50,38 @@ async function Action() {
   }
 }
 
+const RunSearchOnSchedule = async () => {
+  const num_tweets = await SearchAndStore();
 
-async function start() {
-  // search for tweets
-  await SearchAndStore();
+  /**
+   * Calculate the duration after which to start searching again
+   *  Calculated as - 
+   *    `number of tweets * duration between retweets`
+   */
+  const break_duration = num_tweets * bot.tweet_interval;
 
-  // Run Action after every TweetInterval milliseconds 
-  setInterval(Action, TweetInterval);
+  /**
+   * Start searching again after the break
+   */
+  setTimeout(SearchAndStore, break_duration);
+}
 
-  // also start retweeting immediately 
+const RunActionOnSchedule = async () => {
+  /**
+   * Set to run action after every tweet_interval milliseconds
+   */
+  setInterval(Action, bot.tweet_interval);
+
+  /**
+   * Start the first time immediately
+   */
   Action();
 }
 
-SearchAndStore();
+async function StartSchedules() {
+  RunSearchOnSchedule();
+
+  RunActionOnSchedule();
+}
+
+StartSchedules();

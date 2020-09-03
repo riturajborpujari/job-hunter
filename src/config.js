@@ -114,8 +114,8 @@ const GetTweet = () => {
   /**
    * Update config file asynchronously
    */
-  CONFIG.tweetIds = tweet_ids;
-  fs.writeFile('config.json', JSON.stringify(CONFIG));
+  CONFIG.tweet_ids = tweet_ids;
+  fs.writeFile('config.json', JSON.stringify(CONFIG), () => {});
 
   return tweet_id;
 }
