@@ -1,55 +1,73 @@
 const Tw = require('twitter');
-const { TwitterConfig, BotUser} = require('./config');
+const { api_config, bot } = require('./config');
 
-const twitter = new Tw(TwitterConfig.acc);
+/**
+ * Initialize the Twitter API client
+ */
+const twitter = new Tw(api_config.account_level);
 
-async function searchTweets(search_params) {
-  let endpoint = 'search/tweets';
+/**
+ * Searches for tweet
+ * @param {import('./config').SearchParams} search_params the search parameters for Twitter
+ */
+async function SearchTweets(search_params) {
+  const endpoint = 'search/tweets';
 
-  let res = await twitter.get(endpoint, search_params);
+  const res = await twitter.get(endpoint, search_params);
 
-  // Filter only ids for tweets
-  let tweetIds = filterTweetIds(res.statuses);
+  /**
+   * Get the ids of the fetched tweets
+   */
+  let tweet_ids = GetTweetIds(res.statuses);
+
+  /**
+   * Get the new search continuation parameter
+   */
   let since_id = getRefreshParameter(res.search_metadata);
 
   return {
-    tweetIds,
+    tweet_ids,
     since_id
   };
 }
 
-async function retweet(tweetId) {
-  let endpoint = `statuses/retweet`;
+/**
+ * Create a new retweet
+ * @param {string} tweet_id the id of the tweet to retweet
+ */
+async function CreateRetweet(tweet_id) {
+  const endpoint = `statuses/retweet`;
 
-  let res = await twitter.post(endpoint, {
-    id: tweetId
-  });
-
-  return res;
-}
-
-async function favorite(tweetId) {
-  let endpoint = `favorites/create`;
-
-  let res = await twitter.post(endpoint, {
-    id: tweetId
-  });
+  const res = await twitter.post(endpoint, { id: tweet_id });
 
   return res;
 }
 
-function filterTweetIds(tweets) {
-  let ids = [];
+/**
+ * Favorite (like) a tweet
+ * @param {string} tweet_id the id of the tweet to favorite (like)
+ */
+async function CreateFavorite(tweet_id) {
+  const endpoint = `favorites/create`;
+
+  const res = await twitter.post(endpoint, { id: tweet_id });
+
+  return res;
+}
+
+function GetTweetIds(tweets) {
+  /**
+   * @type {string[]} the list of ids of tweets
+   */
+  const ids = [];
 
   tweets.forEach(tweet => {
-    if (BotUser) {
-      // skip tweets that are posted by this bot itself
-      if (tweet.user.screen_name !== BotUser) {
-        ids.push(tweet.id_str);
-      }
-    }
-    else {
+    /**
+     * Skip tweets that are posted by this bot itself
+     */
+    if (tweet.user.screen_name !== bot.username) {
       ids.push(tweet.id_str);
+      // console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`);
     }
   })
 
@@ -89,7 +107,7 @@ function getRefreshParameter(search_metadata) {
 }
 
 module.exports = {
-  searchTweets,
-  favorite,
-  retweet
+  SearchTweets,
+  CreateFavorite,
+  CreateRetweet
 };
